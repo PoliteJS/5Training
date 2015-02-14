@@ -8,6 +8,7 @@ var Container = require('reactui/container');
 var Row = require('reactui/row');
 var Col = require('reactui/col');
 var PageHeader = require('reactui/page-header');
+var Button = require('reactui/button');
 
 var Timer = require('timer');
 
@@ -21,6 +22,7 @@ var SessionPlayer = React.createClass({
     getInitialState() {
         return {
             isRunning: this.props.isRunning,
+            isPaused: false,
             elapsedTime: 0,
             currentStep: null,
             stepCountdown: null
@@ -36,6 +38,7 @@ var SessionPlayer = React.createClass({
     updateStateFromModel(model) {
         this.setState({
             isRunning: this.model.isRunning,
+            isPaused: this.model.isPaused,
             elapsedTime: this.model.elapsedTime,
             currentStep: this.model.currentStep,
             stepCountdown: this.model.stepCountdown
@@ -48,11 +51,22 @@ var SessionPlayer = React.createClass({
             this.model.start();
         }
     },
+    pauseResume() {
+        if (this.model.isPaused) {
+            this.model.resume();
+        } else {
+            this.model.pause();
+        }  
+    },
     render() {
         
         var activityComponent;
         var currentStep = this.state.currentStep;
-        var buttonLabel = this.state.isRunning ? 'Stop' : 'Start';
+        var startButtonLabel = this.state.isRunning ? 'Stop' : 'Start';
+        var startButtonIcon = this.state.isRunning ? 'stop' : 'play';
+        var pauseButtonLabel = this.state.isPaused ? 'Resume' : 'Pause';
+        var pauseButtonIcon = this.state.isPaused ? 'play' : 'pause';
+        var pauseButtonDisabled = this.state.isRunning ? false : true;
         
         if (currentStep) {
             // get activity component
@@ -76,14 +90,22 @@ var SessionPlayer = React.createClass({
                     titleSize="4"
                     title="5Training" 
                     subtitle=" - Your Personal Trainer" 
-                />
+                    />
                 <Row>
                     <Col size="6">
-                        <button
-                            onClick={this.startStop}
-                            children={buttonLabel}
-                            className="btn btn-primary"
-                            />
+                        <Button.Group>
+                            <Button
+                                text={startButtonLabel}
+                                icon={startButtonIcon}
+                                onClick={this.startStop}
+                                />
+                            <Button
+                                text={pauseButtonLabel}
+                                icon={pauseButtonIcon}
+                                disabled={pauseButtonDisabled}
+                                onClick={this.pauseResume}
+                                />
+                        </Button.Group>
                     </Col>
                     <Col size="6" className="text-right">
                         <Timer value={this.state.elapsedTime} />

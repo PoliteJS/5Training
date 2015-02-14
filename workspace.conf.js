@@ -30,7 +30,7 @@ module.exports = {
         // but you can move them into a sub-folder if you prefer.
         //
         // NOTE: this can be the same folder used for Javascript entry points!
-        styles: 'less'
+        styles: 'styles'
     },
     
     target: {

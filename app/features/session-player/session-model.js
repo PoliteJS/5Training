@@ -58,8 +58,12 @@ TrainingSession.prototype.start = function() {
 };
 
 TrainingSession.prototype.stop = function() {
+    if (this.isPaused) {
+        this.resume();
+    }
     clearInterval(this.__timer);
     this.isRunning = false;
+    this.emit('stop');
 };
 
 TrainingSession.prototype.pause = function() {
@@ -76,7 +80,7 @@ TrainingSession.prototype.resume = function() {
 
 TrainingSession.prototype.finish = function() {
     this.stop();
-    this.emit('end');
+    this.emit('finish');
 };
 
 TrainingSession.prototype.tick = function() {
