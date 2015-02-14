@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 
 /**
  * Represent a list of classes to be given to a React's component
@@ -46,7 +46,7 @@ ClassMap.prototype.set = function(cname, val) {
 };
 
 ClassMap.prototype.addClass = function(cname) {
-    if (undefined === cname) {
+    if (undefined === cname || null === cname) {
         return;
     }
     if (undefined === this.map[cname]) {
