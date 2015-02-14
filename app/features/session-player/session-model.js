@@ -1,8 +1,8 @@
 
 module.exports = TrainingSession;
 
-function TrainingSession(sessionSchedule, options) {
-    this.sessionSchedule = sessionSchedule;
+function TrainingSession(sessionData, options) {
+    this.sessionData = sessionData;
     this.options = options;
     
     this.isRunning;
@@ -109,7 +109,7 @@ TrainingSession.prototype.tick = function() {
 TrainingSession.prototype.walk = function() {
     var nextStepIndex = this.currentStepIndex + 1;
     
-    if (nextStepIndex >= this.sessionSchedule.length) {
+    if (nextStepIndex >= this.sessionData.activities.length) {
         this.finish();
         return;
     }
@@ -121,7 +121,7 @@ TrainingSession.prototype.walk = function() {
 
 TrainingSession.prototype.step = function(stepIndex) {
     this.currentStepIndex = stepIndex;
-    this.currentStep = this.sessionSchedule[this.currentStepIndex];
+    this.currentStep = this.sessionData.activities[this.currentStepIndex];
     this.stepStartTime = now();
     this.stepElapsedTime = 0;
     this.stepDuration = this.currentStep.duration;

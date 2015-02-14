@@ -12,7 +12,8 @@
 var React = require('react');
 
 var SessionPlayer = require('session-player');
-var sessionData = require('session/test');
+var sessionData = require('session/test.json');
+
 
 var training = React.createElement(SessionPlayer, {
     session: sessionData,
