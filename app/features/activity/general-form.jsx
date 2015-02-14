@@ -5,7 +5,7 @@
  * activity.
  *
  * When the component unmount the value is sent back
- * via 'onNewData()' callback.
+ * via 'pushEventData()' callback.
  */
 
 var React = require('react');
@@ -18,7 +18,7 @@ function noop() {}
 var GeneralForm = React.createClass({
     getDefaultProps() {
         return {
-            onNewData: noop,
+            pushEventData: noop,
             activity: null,
             question: 'how many repetitions?'
         };
@@ -35,7 +35,7 @@ var GeneralForm = React.createClass({
         if (!this.state.value) {
             return;
         }
-        this.props.onNewData(this.props.activity, 'value', this.state.value);
+        this.props.pushEventData(this.props.activity, 'repetitions', this.state.value);
     },
     clearValue() {
         this.refs['input'].setValue('');

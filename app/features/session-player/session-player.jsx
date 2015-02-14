@@ -68,8 +68,12 @@ var SessionPlayer = React.createClass({
     reset() {
         this.model.reset();
     },
-    pushData(activity, dataName, dataValue) {
-        console.log(activity, dataName, dataValue);
+    pushEventData(activity, label, value) {
+        this.model.push({
+            activity: activity,
+            label: label,
+            value: value
+        });
     },
     render() {
         
@@ -94,7 +98,7 @@ var SessionPlayer = React.createClass({
             activityComponent = React.createElement(activityComponent, {
                 activity: currentStep.activity,
                 countdown: this.state.stepCountdown,
-                onNewData: this.pushData
+                pushEventData: this.pushEventData
             });
         }
 
@@ -119,6 +123,8 @@ var SessionPlayer = React.createClass({
                         iconPos="left"
                         onClick={this.reset}
                     />
+                    <hr />
+                    <div>{this.model.sessionEvents}</div>
                 </div>
             );
         } else {
