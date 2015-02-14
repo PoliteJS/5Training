@@ -1,14 +1,19 @@
+'use strict';
+
+
 
 var React = require('react');
-var classMap = require('../utils/class-map');
+var ClassMap = require('../utils/class-map');
 var statusList = require('../status-list');
 
-module.exports = React.createClass({
+var Icon = require('../icon');
+
+var Button = React.createClass({
     propTypes: {
         role: React.PropTypes.oneOf(statusList.concat(['link'])),
         display: React.PropTypes.oneOf(['block']),
         size: React.PropTypes.oneOf(['lg','sm','xs']),
-        status: React.PropTypes.oneOf(['active','disabled'])
+        iconPos: React.PropTypes.oneOf(['left','right']),
     },
     getDefaultProps() {
         return {
@@ -16,12 +21,27 @@ module.exports = React.createClass({
             role: 'default',
             size: null,
             display: null,
-            status: null
+            iconPos: 'right'
         };
     },
     render() {
-        var {type, role, size, display, status, value, className, children, ...other} = this.props;
-        var classes = new classMap(['btn']);
+
+        var compositeContent;
+        
+        var {
+            type, 
+            role, 
+            size, 
+            display, 
+            text,
+            icon,
+            iconPos,
+            className, 
+            children, 
+            ...other
+        } = this.props;
+        
+        var classes = new ClassMap(['btn']);
 
         if (role) {
             classes.addClass('btn-' + role);
@@ -35,22 +55,30 @@ module.exports = React.createClass({
             classes.addClass('btn-' + display);
         }
 
-        if ('active' === status) {
-            classes.addClass(status);   
-        }
-
-        if ('disabled' === status) {
-            other.disabled = 'disabled';
-        }
-
         if (className) {
             classes.add(className);
         }
 
+        if (icon) {
+            icon = <Icon glyph={icon} />;
+            switch (iconPos) {
+                case 'left':
+                    compositeContent = <span>{icon} {text || children}</span>;
+                    break;
+                case 'right':
+                    compositeContent = <span>{text || children} {icon}</span>;
+                    break;
+            }
+        }
+
         return (
             <button {...other} className={classes}>
-                {value || children}
+                {compositeContent || text || children}
             </button>
         );
     }
 });
+
+
+Button.Group = require('./group.jsx');
+module.exports = Button;

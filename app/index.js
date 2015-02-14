@@ -17,7 +17,7 @@ var sessionData = require('session/test.json');
 
 var training = React.createElement(SessionPlayer, {
     session: sessionData,
-    isRunning: true
+    isRunning: false
 });
 
 React.render(
