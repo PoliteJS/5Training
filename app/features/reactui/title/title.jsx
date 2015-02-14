@@ -1,3 +1,4 @@
+'use strict';
 
 /**
  * <Title>foo</Title>
@@ -5,9 +6,8 @@
  * <Title text="foo" subtitle="fii" size="2" />
  */
 
-
 var React = require('react');
-var classMixin = require('../utils/class-mixin');
+var ClassMap = require('../utils/class-map');
 
 var defaultSize = 1;
 
@@ -18,20 +18,24 @@ module.exports = React.createClass({
         subtitle: React.PropTypes.string
     },
     render() {
-        var args, tagName, classes;
-        var {text, subtitle, size, className, children, ...other} = this.props;
+        var args, tagName;
+        var {
+            text, 
+            subtitle, 
+            size, 
+            className, 
+            children, 
+            ...props
+        } = this.props;
 
         tagName = 'h' + (size || defaultSize);
         
         // optional class attribute - only if inherited from outside
-        classes = classMixin([], className).toString();
-        if (classes.length) {
-            other.className = classes;
-        }
+        props.className = new ClassMap(className);
         
         args = [
             tagName,
-            other,
+            props,
             children
         ];
 

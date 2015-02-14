@@ -1,6 +1,7 @@
+'use strict';
 
 var React = require('react');
-var classMixin = require('../utils/class-mixin');
+var ClassMap = require('../utils/class-map');
 
 var defaultType = 'xs';
 var defaultSize = 12;
@@ -14,8 +15,15 @@ module.exports = React.createClass({
         ])
     },
     render() {
-        var {className, size, children, ...other} = this.props;
-        var classes = classMixin(parseColumnSize(size), className);
+        
+        var {
+            className, 
+            size, 
+            children, 
+            ...other
+        } = this.props;
+        
+        var classes = new ClassMap(parseColumnSize(size).concat([className]));
         
         return (
             <div {...other} className={classes}>

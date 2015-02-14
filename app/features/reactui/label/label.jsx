@@ -1,9 +1,13 @@
+'use strict';
+
+/**
+ * <Label value="label content" />
+ * <Label value="label content" type="info" />
+ */
 
 var React = require('react');
-var classMixin = require('../utils/class-mixin');
+var ClassMap = require('../utils/class-map');
 var statusList = require('../status-list');
-
-var defaultSize = 1;
 
 module.exports = React.createClass({
     propTypes: {
@@ -15,8 +19,16 @@ module.exports = React.createClass({
         };
     },
     render() {
-        var {type, value, className, children, ...other} = this.props;
-        var classes = classMixin(['label','label-'+type], className);
+        var {
+            type, 
+            value, 
+            className, 
+            children, 
+            ...other
+        } = this.props;
+
+        var classes = new ClassMap(['label', 'label-'+type, className]);
+
         return (
             <span {...other} className={classes}>
                 {value || children}

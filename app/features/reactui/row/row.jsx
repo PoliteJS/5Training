@@ -1,10 +1,11 @@
+'use strict';
+
 /**
  * attribute "colSize" is forwarded down to "Col::size"
  */
 
-
 var React = require('react');
-var classMixin = require('../utils/class-mixin');
+var ClassMap = require('../utils/class-map');
 
 var Col = require('../col');
 
@@ -17,8 +18,15 @@ module.exports = React.createClass({
         ])
     },
     render() {
-        var {className, colSize, children, ...other} = this.props;
-        var classes = classMixin('row', className);
+        
+        var {
+            className, 
+            colSize, 
+            children, 
+            ...other
+        } = this.props;
+
+        var classes = new ClassMap(['row', className]);
 
         return (
             <div {...other} className={classes}>
