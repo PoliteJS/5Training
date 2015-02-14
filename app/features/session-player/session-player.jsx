@@ -7,6 +7,8 @@ var activityComponents = require('activity');
 var Container = require('reactui/container');
 var Row = require('reactui/row');
 var Col = require('reactui/col');
+var PageHeader = require('reactui/page-header');
+
 var Timer = require('timer');
 
 var SessionPlayer = React.createClass({
@@ -70,6 +72,11 @@ var SessionPlayer = React.createClass({
         
         return (
             <Container>
+                <PageHeader 
+                    titleSize="4"
+                    title="5Training" 
+                    subtitle=" - Your Personal Trainer" 
+                />
                 <Row>
                     <Col size="6">
                         <button
@@ -86,7 +93,6 @@ var SessionPlayer = React.createClass({
                 <div className="well">
                     {activityComponent}
                 </div>
-                
             </Container>
         );
     }
