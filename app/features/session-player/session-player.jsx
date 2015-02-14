@@ -9,6 +9,7 @@ var Row = require('reactui/row');
 var Col = require('reactui/col');
 var PageHeader = require('reactui/page-header');
 var Button = require('reactui/button');
+var Well = require('reactui/well');
 
 var Timer = require('timer');
 
@@ -21,6 +22,7 @@ var SessionPlayer = React.createClass({
     },
     getInitialState() {
         return {
+            hasRan: false,
             isRunning: this.props.isRunning,
             isPaused: false,
             elapsedTime: 0,
@@ -37,6 +39,7 @@ var SessionPlayer = React.createClass({
     },
     updateStateFromModel(model) {
         this.setState({
+            hasRan: this.model.hasRan,
             isRunning: this.model.isRunning,
             isPaused: this.model.isPaused,
             elapsedTime: this.model.elapsedTime,
@@ -57,6 +60,9 @@ var SessionPlayer = React.createClass({
         } else {
             this.model.pause();
         }  
+    },
+    reset() {
+        this.model.reset();
     },
     render() {
         
@@ -81,7 +87,44 @@ var SessionPlayer = React.createClass({
             activityComponent = React.createElement(activityComponent, {
                 activity: currentStep.activity,
                 countdown: this.state.stepCountdown
-            });    
+            });
+        }
+
+        if (this.state.isRunning) {
+            activityComponent = (
+                <div>
+                    <hr />
+                    <Well children={activityComponent} />
+                </div>
+            );
+        } else if (this.state.hasRan) {
+            activityComponent = (
+                <div className="text-center">
+                    <hr />
+                    <p className="lead">
+                        <Timer value={this.state.elapsedTime} />
+                    </p>
+                    <Button 
+                        role="danger"
+                        text="Discard Training" 
+                        icon="remove" 
+                        iconPos="left"
+                        onClick={this.reset}
+                    />
+                </div>
+            );
+        } else {
+            activityComponent = (
+                <div className="text-center">
+                    <hr />
+                    <Button 
+                        role="primary"
+                        text="Start Training" 
+                        icon="play" 
+                        onClick={this.startStop}
+                    />
+                </div>
+            );
         }
         
         return (
@@ -111,10 +154,7 @@ var SessionPlayer = React.createClass({
                         <Timer value={this.state.elapsedTime} />
                     </Col>
                 </Row>
-                <hr />
-                <div className="well">
-                    {activityComponent}
-                </div>
+                {activityComponent}
             </Container>
         );
     }
