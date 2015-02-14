@@ -1,27 +1,45 @@
+'use strict';
+
+/**
+ * <PageHeader title="foo" />
+ * <PageHeader title="foo" subtitle="faa" />
+ * <PageHeader title="foo" titleSize="4" />
+ */
 
 var React = require('react');
-var classMixin = require('../utils/class-mixin');
+var ClassMap = require('../utils/class-map');
 
 var Title = require('../title');
 
 module.exports = React.createClass({
     propTypes: {},
     render() {
-        var {className, title, subtitle, titleSize, children, ...other} = this.props;
-        var classes = classMixin('page-header', className);
         
+        var {
+            title, 
+            subtitle, 
+            titleSize,
+            className,
+            titleClassName,
+            children, 
+            ...other 
+        } = this.props;
+
+        var classes = new ClassMap(['page-header', className]);
         
         return (
             <div {...other} className={classes}>
-                {createTitle(title, subtitle, titleSize)}
+                {createTitle(title, subtitle, titleSize, titleClassName)}
                 {children}
             </div>
         );
     }
 });
 
-function createTitle(title, subtitle, titleSize) {
-    var titleProps = {};
+function createTitle(title, subtitle, titleSize, titleClassName) {
+    var titleProps = {
+        className: titleClassName
+    };
         
     if (title) {
         titleProps.text = title;
