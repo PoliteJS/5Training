@@ -1,24 +1,24 @@
 {
     "activities": [{
         "activity" : "smooth-jump",
-        "duration": 3000
+        "duration": 300
     },{
         "activity": "smooth-jump",
-        "duration": 3000,
+        "duration": 2000,
         "gatherData": true
     },{
         "activity": "pushups",
-        "duration": 1500
+        "duration": 300
     },{
         "activity": "pushups",
-        "duration": 3000,
+        "duration": 2000,
         "gatherData": true
     },{
         "activity": "situps",
-        "duration": 1500
+        "duration": 300
     },{
         "activity": "situps",
-        "duration": 3000,
+        "duration": 2000,
         "gatherData": true
     }]
 }

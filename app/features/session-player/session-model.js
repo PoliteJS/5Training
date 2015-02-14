@@ -1,12 +1,13 @@
 
 module.exports = TrainingSession;
 
-function TrainingSession(sessionData, options) {
-    this.sessionData = sessionData;
+function TrainingSession(sessionSchedule, options) {
+    this.sessionSchedule = sessionSchedule;
     this.options = options;
     
     this.hasRan;
     this.isRunning;
+    this.sessionEvents;
     
     this.__timer;
     this.startTime;
@@ -32,6 +33,7 @@ function TrainingSession(sessionData, options) {
 TrainingSession.prototype.reset = function() {
     this.hasRan = false;
     this.isRunning = false;
+    this.sessionEvents = [];
     
     this.startTime = now();
     this.elapsedTime = 0;
@@ -118,7 +120,7 @@ TrainingSession.prototype.tick = function() {
 TrainingSession.prototype.walk = function() {
     var nextStepIndex = this.currentStepIndex + 1;
     
-    if (nextStepIndex >= this.sessionData.activities.length) {
+    if (nextStepIndex >= this.sessionSchedule.activities.length) {
         this.finish();
         return;
     }
@@ -130,7 +132,7 @@ TrainingSession.prototype.walk = function() {
 
 TrainingSession.prototype.step = function(stepIndex) {
     this.currentStepIndex = stepIndex;
-    this.currentStep = this.sessionData.activities[this.currentStepIndex];
+    this.currentStep = this.sessionSchedule.activities[this.currentStepIndex];
     this.stepStartTime = now();
     this.stepElapsedTime = 0;
     this.stepDuration = this.currentStep.duration;
@@ -138,7 +140,6 @@ TrainingSession.prototype.step = function(stepIndex) {
 };
 
 TrainingSession.prototype.emit = function(eventName) {
-//    console.log(eventName, this);
     this.__eventHandlers.forEach(function(eventHandler) {
         eventHandler(eventName, this);
     }.bind(this));
@@ -146,6 +147,11 @@ TrainingSession.prototype.emit = function(eventName) {
 
 TrainingSession.prototype.subscribe = function(eventHandler) {
     this.__eventHandlers.push(eventHandler);
+};
+
+TrainingSession.prototype.push = function(data) {
+    this.sessionEvents.push(data);
+    this.emit('event-data', data);
 };
 
 function now() {

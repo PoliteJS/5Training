@@ -36,6 +36,10 @@ var SessionPlayer = React.createClass({
         if (this.props.isRunning) {
             this.model.start();
         }
+        // this.setState({
+        //     isRunning: true,
+        //     currentStep: this.props.session.activities[1]
+        // });
     },
     updateStateFromModel(model) {
         this.setState({
@@ -64,6 +68,13 @@ var SessionPlayer = React.createClass({
     reset() {
         this.model.reset();
     },
+    pushEventData(activity, label, value) {
+        this.model.push({
+            activity: activity,
+            label: label,
+            value: value
+        });
+    },
     render() {
         
         var activityComponent;
@@ -86,7 +97,8 @@ var SessionPlayer = React.createClass({
             // create the activity element giving data into it
             activityComponent = React.createElement(activityComponent, {
                 activity: currentStep.activity,
-                countdown: this.state.stepCountdown
+                countdown: this.state.stepCountdown,
+                pushEventData: this.pushEventData
             });
         }
 
@@ -111,6 +123,8 @@ var SessionPlayer = React.createClass({
                         iconPos="left"
                         onClick={this.reset}
                     />
+                    <hr />
+                    <div>{this.model.sessionEvents}</div>
                 </div>
             );
         } else {

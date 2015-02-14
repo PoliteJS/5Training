@@ -1,1 +1,0 @@
-module.exports = require('./form-control.jsx');
