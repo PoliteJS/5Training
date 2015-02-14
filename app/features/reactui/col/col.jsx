@@ -23,7 +23,7 @@ module.exports = React.createClass({
             ...other
         } = this.props;
         
-        var classes = new ClassMap([parseColumnSize(size), className]);
+        var classes = new ClassMap(parseColumnSize(size).concat([className]));
         
         return (
             <div {...other} className={classes}>
