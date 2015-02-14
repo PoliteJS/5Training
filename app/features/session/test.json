@@ -8,14 +8,14 @@
         "gatherData": true
     },{
         "activity": "pushups",
-        "duration": 1500
+        "duration": 1000
     },{
         "activity": "pushups",
         "duration": 3000,
         "gatherData": true
     },{
         "activity": "situps",
-        "duration": 1500
+        "duration": 1000
     },{
         "activity": "situps",
         "duration": 3000,
