@@ -1,0 +1,45 @@
+{
+  "name": "politejs-workspace",
+  "version": "2.0.7",
+  "description": "Single Page Application Workspace",
+  "main": "Gulpfile.js",
+  "scripts": {
+    "run": "gulp"
+  },
+  "keywords": [
+    "single page application",
+    "boilerplate",
+    "compiler",
+    "builder",
+    "jquery",
+    "jqm",
+    "jquery mobile"
+  ],
+  "author": {
+    "name": "Marco Pegoraro",
+    "url": "http://movableapp.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/PoliteJS/workspace"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "gulp-workspace": "0.0.x",
+    "jsx-loader": "^0.12.2",
+    "react-loader": "^1.1.0"
+  },
+  "dependencies": {
+    "ajax": "0.0.4",
+    "bing-translate": "0.0.2",
+    "body-parser": "^1.10.2",
+    "jqb-ko-component": "0.0.0",
+    "json-loader": "^0.5.1",
+    "jsonp": "^0.1.0",
+    "object-md5": "^0.1.1"
+  }
+}

@@ -1,0 +1,33 @@
+/**
+ * Custom Twitter Bootstrap Build
+ * ==============================
+ * 
+ * This is the main CSS entry point of the app.
+ *
+ * In this examples we hosts the original Twitter Bootstrap's Less source
+ * and we play with variables and modules to serve an optimised stylesheet.
+ * 
+ * NOTE:
+ * all the files that match the pattern "xxx.inc.less" are not considered as
+ * entry points for LessCss compiler!
+ */
+
+@import "./build.inc.less";
+@import "./variables.inc.less";
+
+
+/**
+ * Add further customization to Boostrap!
+ * -- here you can use your own overridden variables!
+ */
+.jumbotron {
+    position: relative;
+    margin-top: @padding-base-vertical * 3;
+    h1 small {
+        position: absolute;
+        bottom: @padding-base-vertical;
+        right: @padding-small-horizontal;
+        color: @gray-lighter;
+        font-size: @font-size-small;
+    }
+}
