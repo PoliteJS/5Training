@@ -4,9 +4,9 @@ var React = require('react');
 var SessionModel = require('./session-model');
 var activityComponents = require('activity');
 
-var Container = require('bootstract/container');
-var Row = require('bootstract/row');
-var Col = require('bootstract/col');
+var Container = require('reactui/container');
+var Row = require('reactui/row');
+var Col = require('reactui/col');
 var Timer = require('timer');
 
 var SessionPlayer = React.createClass({
