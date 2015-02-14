@@ -23,7 +23,8 @@ exports.dev = function() {
         },
         module: {
             loaders: [
-                { test: /\.jsx$/, loaders: ['jsx?harmony'] }
+                { test: /\.jsx$/, loaders: ['jsx?harmony'] },
+                { test: /\.json$/, loaders: ['json'] }
             ]
         }
     };
