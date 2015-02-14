@@ -5,6 +5,7 @@ function TrainingSession(sessionData, options) {
     this.sessionData = sessionData;
     this.options = options;
     
+    this.hasRan;
     this.isRunning;
     
     this.__timer;
@@ -29,6 +30,7 @@ function TrainingSession(sessionData, options) {
 }
 
 TrainingSession.prototype.reset = function() {
+    this.hasRan = false;
     this.isRunning = false;
     
     this.startTime = now();
@@ -46,6 +48,8 @@ TrainingSession.prototype.reset = function() {
     
     this.isPaused = false;
     this.pauseElapsedTime = 0;
+
+    this.emit('reset');
 };
 
 TrainingSession.prototype.start = function() {
@@ -62,6 +66,7 @@ TrainingSession.prototype.stop = function() {
         this.resume();
     }
     clearInterval(this.__timer);
+    this.hasRan = true;
     this.isRunning = false;
     this.emit('stop');
 };
