@@ -12,6 +12,7 @@ var Button = require('reactui/button');
 var Well = require('reactui/well');
 
 var Timer = require('timer');
+var PlayerToolbar = require('./player-toolbar.jsx');
 
 var SessionPlayer = React.createClass({
     getDefaultProps() {
@@ -83,13 +84,8 @@ var SessionPlayer = React.createClass({
     },
     render() {
         
-        var activityComponent;
+        var activityComponent, toolbarComponent;
         var currentStep = this.state.currentStep;
-        var startButtonLabel = this.state.isRunning ? 'Stop' : 'Start';
-        var startButtonIcon = this.state.isRunning ? 'stop' : 'play';
-        var pauseButtonLabel = this.state.isPaused ? 'Resume' : 'Pause';
-        var pauseButtonIcon = this.state.isPaused ? 'play' : 'pause';
-        var pauseButtonDisabled = this.state.isRunning ? false : true;
         
         if (currentStep) {
             // get activity component
@@ -114,6 +110,12 @@ var SessionPlayer = React.createClass({
         if (this.state.isRunning) {
             activityComponent = (
                 <div>
+                    <PlayerToolbar 
+                        isRunning={this.state.isRunning}
+                        elapsedTime={this.state.elapsedTime}
+                        startStop={this.startStop}
+                        pauseResume={this.pauseResume}
+                        />
                     <hr />
                     <Well children={activityComponent} />
                 </div>
@@ -121,7 +123,6 @@ var SessionPlayer = React.createClass({
         } else if (this.state.hasRan) {
             activityComponent = (
                 <div className="text-center">
-                    <hr />
                     <p className="lead">
                         <Timer value={this.state.elapsedTime} />
                     </p>
@@ -139,7 +140,6 @@ var SessionPlayer = React.createClass({
         } else {
             activityComponent = (
                 <div className="text-center">
-                    <hr />
                     <Button 
                         role="primary"
                         text="Start Training" 
@@ -157,26 +157,6 @@ var SessionPlayer = React.createClass({
                     title="5Training" 
                     subtitle=" - Your Personal Trainer" 
                     />
-                <Row>
-                    <Col size="6">
-                        <Button.Group>
-                            <Button
-                                text={startButtonLabel}
-                                icon={startButtonIcon}
-                                onClick={this.startStop}
-                                />
-                            <Button
-                                text={pauseButtonLabel}
-                                icon={pauseButtonIcon}
-                                disabled={pauseButtonDisabled}
-                                onClick={this.pauseResume}
-                                />
-                        </Button.Group>
-                    </Col>
-                    <Col size="6" className="text-right">
-                        <Timer value={this.state.elapsedTime} />
-                    </Col>
-                </Row>
                 {activityComponent}
             </Container>
         );
