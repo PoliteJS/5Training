@@ -27,7 +27,10 @@ var SessionPlayer = React.createClass({
             isPaused: false,
             elapsedTime: 0,
             currentStep: null,
-            stepCountdown: null
+            stepElapsedTime: 0,
+            stepPausedTime: 0,
+            stepActivityTime: 0,
+            stepCountdown: 0
         };
     },
     componentDidMount() {
@@ -48,6 +51,9 @@ var SessionPlayer = React.createClass({
             isPaused: this.model.isPaused,
             elapsedTime: this.model.elapsedTime,
             currentStep: this.model.currentStep,
+            stepElapsedTime: this.model.stepElapsedTime,
+            stepPausedTime: this.model.stepPausedTime,
+            stepActivityTime: this.model.stepActivityTime,
             stepCountdown: this.model.stepCountdown
         });
     },
@@ -97,6 +103,9 @@ var SessionPlayer = React.createClass({
             // create the activity element giving data into it
             activityComponent = React.createElement(activityComponent, {
                 activity: currentStep.activity,
+                elapsedTime: this.state.stepElapsedTime,
+                pausedTime: this.state.stepPausedTime,
+                activityTime: this.state.stepActivityTime,
                 countdown: this.state.stepCountdown,
                 pushEventData: this.pushEventData
             });
