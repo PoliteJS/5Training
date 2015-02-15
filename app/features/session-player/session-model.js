@@ -16,9 +16,13 @@ function TrainingSession(sessionSchedule, options) {
     this.currentStepIndex;
     this.currentStep;
     this.stepStartTime;
-    this.stepElapsedTime;
     this.stepDuration;
+    this.stepElapsedTime;
+    this.stepPausedTime;
+    this.stepActivityTime;
     this.stepCountdown;
+    this.__stepPartialPausedTime;
+    
     
     this.previousStepIndex;
     this.previousStep;
@@ -41,9 +45,12 @@ TrainingSession.prototype.reset = function() {
     this.currentStepIndex = null;
     this.currentStep = null;
     this.stepStartTime = now();
-    this.stepElapsedTime = 0;
     this.stepDuration = 0;
+    this.stepElapsedTime = 0;
+    this.stepPausedTime = 0;
+    this.stepActivityTime = 0;
     this.stepCountdown = 0;
+    this.__stepPartialPausedTime = 0;
     
     this.previousStepIndex = null;
     this.previousStep = null;
@@ -64,10 +71,10 @@ TrainingSession.prototype.start = function() {
 };
 
 TrainingSession.prototype.stop = function() {
+    clearInterval(this.__timer);
     if (this.isPaused) {
         this.resume();
     }
-    clearInterval(this.__timer);
     this.hasRan = true;
     this.isRunning = false;
     this.emit('stop');
@@ -75,6 +82,7 @@ TrainingSession.prototype.stop = function() {
 
 TrainingSession.prototype.pause = function() {
     this.isPaused = true;
+    this.pauseElapsedTime = 0;
     this.pauseStartTime = now();
     this.emit('pause');
 };
@@ -82,6 +90,7 @@ TrainingSession.prototype.pause = function() {
 TrainingSession.prototype.resume = function() {
     this.isPaused = false;
     this.stepDuration += this.pauseElapsedTime;
+    this.__stepPartialPausedTime += this.pauseElapsedTime;
     this.emit('resume');
 };
 
@@ -91,8 +100,7 @@ TrainingSession.prototype.finish = function() {
 };
 
 TrainingSession.prototype.tick = function() {
-    var stepCountdown;
-    
+        
     this.elapsedTime = now() - this.startTime;
     this.stepElapsedTime = now() - this.stepStartTime;
     this.stepCountdown = this.stepDuration - this.stepElapsedTime;
@@ -100,10 +108,17 @@ TrainingSession.prototype.tick = function() {
     if (this.isPaused) {
         this.pauseElapsedTime = now() - this.pauseStartTime;
         this.stepCountdown += this.pauseElapsedTime;
+        this.stepPausedTime = this.__stepPartialPausedTime + this.pauseElapsedTime;
     }
     
     if (!this.isPaused && this.stepElapsedTime > this.stepDuration) {
         this.stepElapsedTime = this.stepDuration;
+    }
+
+    this.stepActivityTime = this.stepElapsedTime - this.stepPausedTime;
+
+    if (this.stepActivityTime > this.stepDuration) {
+        this.stepActivityTime = this.stepDuration;
     }
     
     if (this.stepCountdown < 0) {
@@ -135,6 +150,9 @@ TrainingSession.prototype.step = function(stepIndex) {
     this.currentStep = this.sessionSchedule.activities[this.currentStepIndex];
     this.stepStartTime = now();
     this.stepElapsedTime = 0;
+    this.stepPausedTime = 0;
+    this.__stepPartialPausedTime = 0;
+    this.stepActivityTime = 0;
     this.stepDuration = this.currentStep.duration;
     this.emit('step');
 };

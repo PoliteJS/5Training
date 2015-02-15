@@ -1,21 +1,21 @@
 {
     "activities": [{
         "activity" : "smooth-jump",
-        "duration": 300
+        "duration": 2000
     },{
         "activity": "smooth-jump",
         "duration": 2000,
         "gatherData": true
     },{
         "activity": "pushups",
-        "duration": 300
+        "duration": 1000
     },{
         "activity": "pushups",
         "duration": 2000,
         "gatherData": true
     },{
         "activity": "situps",
-        "duration": 300
+        "duration": 1000
     },{
         "activity": "situps",
         "duration": 2000,

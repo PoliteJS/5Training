@@ -10,6 +10,7 @@
 
 var React = require('react');
 
+var Timer = require('timer');
 var Input = require('reactui/input');
 var Button = require('reactui/button');
 
@@ -69,6 +70,9 @@ var GeneralForm = React.createClass({
         return (
             <div>
                 <h4>Gather data for: {this.props.activity}</h4>
+                <Timer value={this.props.countdown} />
+
+                <hr />
 
                 <Input.Group>
                     <Button 

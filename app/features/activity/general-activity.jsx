@@ -17,19 +17,29 @@ var GeneralActivity = React.createClass({
             pushEventData: noop,
         }
     },
-    componentDidMount() {
-        this.startTime = (new Date()).getTime();
-    },
     componentWillUnmount() {
-        // this is the FAKE way to get the activity duration. must REMOVE PAUSED TIME!!!
-        var elapsedTime = (new Date()).getTime() - this.startTime;
-        this.props.pushEventData(this.props.activity, 'duration', elapsedTime);
+        this.props.pushEventData(this.props.activity, 'duration', this.props.activityTime);
     },
     render() {
         return (
             <div>
                 <h4>{this.props.activity}</h4>
-                <Timer value={this.props.countdown} />
+                <p>
+                    Elapsed:
+                    <Timer value={this.props.elapsedTime} />
+                </p>
+                <p>
+                    Paused:
+                    <Timer value={this.props.pausedTime} />
+                </p>
+                <p>
+                    Activity:
+                    <Timer value={this.props.activityTime} />
+                </p>
+                <p>
+                    Coundown:
+                    <Timer value={this.props.countdown} />
+                </p>
             </div>
         );
     }
