@@ -18,27 +18,27 @@ var GeneralActivity = React.createClass({
         }
     },
     componentWillUnmount() {
-        this.props.pushEventData(this.props.activity, 'duration', this.props.activityTime);
+        this.props.pushEventData(this.props.currentStep.activity, 'duration', this.props.stepActivityTime);
     },
     render() {
         return (
             <div>
-                <h4>{this.props.activity}</h4>
+                <h4>{this.props.currentStep.activity}</h4>
                 <p>
                     Elapsed:
-                    <Timer value={this.props.elapsedTime} />
+                    <Timer value={this.props.stepElapsedTime} />
                 </p>
                 <p>
                     Paused:
-                    <Timer value={this.props.pausedTime} />
+                    <Timer value={this.props.stepPausedTime} />
                 </p>
                 <p>
                     Activity:
-                    <Timer value={this.props.activityTime} />
+                    <Timer value={this.props.stepActivityTime} />
                 </p>
                 <p>
                     Coundown:
-                    <Timer value={this.props.countdown} />
+                    <Timer value={this.props.stepCountdown} />
                 </p>
             </div>
         );

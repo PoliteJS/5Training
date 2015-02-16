@@ -36,7 +36,7 @@ var GeneralForm = React.createClass({
         if (!this.state.value) {
             return;
         }
-        this.props.pushEventData(this.props.activity, 'repetitions', this.state.value);
+        this.props.pushEventData(this.props.currentStep.activity, 'repetitions', this.state.value);
     },
     clearValue() {
         this.refs['input'].setValue('');
@@ -69,8 +69,8 @@ var GeneralForm = React.createClass({
     render() {
         return (
             <div>
-                <h4>Gather data for: {this.props.activity}</h4>
-                <Timer value={this.props.countdown} />
+                <h4>Gather data for: {this.props.currentStep.activity}</h4>
+                <Timer value={this.props.stepCountdown} />
 
                 <hr />
 

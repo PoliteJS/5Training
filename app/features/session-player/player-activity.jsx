@@ -2,6 +2,11 @@
 var React = require('react');
 var activityComponents = require('activity');
 
+var Well = require('reactui/well');
+var Timer = require('timer');
+
+var PlayerToolbar = require('./player-toolbar.jsx');
+
 var PlayerActivity = React.createClass({
     render() {
 
@@ -23,7 +28,19 @@ var PlayerActivity = React.createClass({
         // create the activity element giving data into it
         element = React.createElement(element, this.props);
 
-        return element;
+        return (
+            <div>
+                <PlayerToolbar 
+                    isRunning={this.props.isRunning}
+                    isPaused={this.props.isPaused}
+                    elapsedTime={this.props.elapsedTime}
+                    startStop={this.props.startStop}
+                    pauseResume={this.props.pauseResume}
+                    />
+                <hr />
+                <Well children={element} />
+            </div>
+        );
     }
 });
 

@@ -1,20 +1,15 @@
 
 var React = require('react');
 
-var SessionModel = require('./session-model');
-// var activityComponents = require('activity');
-
+var PageHeader = require('reactui/page-header');
 var Container = require('reactui/container');
 var Row = require('reactui/row');
 var Col = require('reactui/col');
-var PageHeader = require('reactui/page-header');
-var Button = require('reactui/button');
-var Well = require('reactui/well');
 
-var Timer = require('timer');
-
-var PlayerToolbar = require('./player-toolbar.jsx');
+var SessionModel = require('./session-model');
 var PlayerActivity = require('./player-activity.jsx');
+var PlayerStartup = require('./player-startup.jsx');
+var PlayerCloseup = require('./player-closeup.jsx');
 
 var SessionPlayer = React.createClass({
     getDefaultProps() {
@@ -43,8 +38,9 @@ var SessionPlayer = React.createClass({
             this.model.start();
         }
         // this.setState({
-        //     isRunning: true,
-        //     currentStep: this.props.session.activities[1]
+        //     // isRunning: true,
+        //     // currentStep: this.props.session.activities[1],
+        //     hasRan: true
         // });
     },
     updateStateFromModel(model) {
@@ -85,61 +81,35 @@ var SessionPlayer = React.createClass({
         });
     },
     render() {
-        
-        var toolbarComponent;
-        var currentStep = this.state.currentStep;
-        
-        var activityComponent = React.createElement(PlayerActivity, {
-            currentStep: this.state.currentStep,
-            elapsedTime: this.state.stepElapsedTime,
-            pausedTime: this.state.stepPausedTime,
-            activityTime: this.state.stepActivityTime,
-            countdown: this.state.stepCountdown,
-            pushEventData: this.pushEventData
-        });
+        var activityComponent;
 
+        // current activity view
         if (this.state.isRunning) {
-            activityComponent = (
-                <div>
-                    <PlayerToolbar 
-                        isRunning={this.state.isRunning}
-                        isPaused={this.state.isPaused}
-                        elapsedTime={this.state.elapsedTime}
-                        startStop={this.startStop}
-                        pauseResume={this.pauseResume}
-                        />
-                    <hr />
-                    <Well children={activityComponent} />
-                </div>
-            );
+            activityComponent = React.createElement(PlayerActivity, {
+                isRunning: this.state.isRunning,
+                isPaused: this.state.isPaused,
+                elapsedTime: this.state.elapsedTime,
+                currentStep: this.state.currentStep,
+                stepElapsedTime: this.state.stepElapsedTime,
+                stepPausedTime: this.state.stepPausedTime,
+                stepActivityTime: this.state.stepActivityTime,
+                stepCountdown: this.state.stepCountdown,
+                pushEventData: this.pushEventData,
+                startStop: this.startStop,
+                pauseResume: this.pauseResume
+            });
+        // stats & save data screen
         } else if (this.state.hasRan) {
-            activityComponent = (
-                <div className="text-center">
-                    <p className="lead">
-                        <Timer value={this.state.elapsedTime} />
-                    </p>
-                    <Button 
-                        role="danger"
-                        text="Discard Training" 
-                        icon="remove" 
-                        iconPos="left"
-                        onClick={this.reset}
-                    />
-                    <hr />
-                    <div>{this.model.sessionEvents}</div>
-                </div>
-            );
+            activityComponent = React.createElement(PlayerCloseup, {
+                elapsedTime: this.state.elapsedTime,
+                onReset: this.reset,
+                tempResults: this.model.sessionEvents
+            });
+        // startup screen - before the training
         } else {
-            activityComponent = (
-                <div className="text-center">
-                    <Button 
-                        role="primary"
-                        text="Start Training" 
-                        icon="play" 
-                        onClick={this.startStop}
-                    />
-                </div>
-            );
+            activityComponent = React.createElement(PlayerStartup, {
+                onStart: this.startStop
+            });
         }
         
         return (
