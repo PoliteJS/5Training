@@ -1,5 +1,5 @@
 {
-    "activities": [{
+    "schedule": [{
         "activity" : "smooth-jump",
         "duration": 2000
     },{
