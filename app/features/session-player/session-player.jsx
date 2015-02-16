@@ -112,6 +112,7 @@ var SessionPlayer = React.createClass({
                 <div>
                     <PlayerToolbar 
                         isRunning={this.state.isRunning}
+                        isPaused={this.state.isPaused}
                         elapsedTime={this.state.elapsedTime}
                         startStop={this.startStop}
                         pauseResume={this.pauseResume}

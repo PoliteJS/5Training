@@ -24,6 +24,10 @@ var Button = React.createClass({
             iconPos: 'right'
         };
     },
+    clickHandler() {
+        this.refs['btn'].getDOMNode().blur();
+        this.props.onClick && this.props.onClick.apply(this, arguments);
+    },
     render() {
 
         var compositeContent;
@@ -72,7 +76,7 @@ var Button = React.createClass({
         }
 
         return (
-            <button {...other} className={classes}>
+            <button {...other} ref="btn" className={classes} onClick={this.clickHandler}>
                 {compositeContent || text || children}
             </button>
         );
