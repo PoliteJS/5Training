@@ -2,7 +2,7 @@
 module.exports = TrainingSession;
 
 function TrainingSession(sessionSchedule, options) {
-    this.sessionSchedule = sessionSchedule;
+    this.session = sessionSchedule;
     this.options = options;
     
     this.hasRan;
@@ -135,7 +135,7 @@ TrainingSession.prototype.tick = function() {
 TrainingSession.prototype.walk = function() {
     var nextStepIndex = this.currentStepIndex + 1;
     
-    if (nextStepIndex >= this.sessionSchedule.activities.length) {
+    if (nextStepIndex >= this.session.schedule.length) {
         this.finish();
         return;
     }
@@ -147,7 +147,7 @@ TrainingSession.prototype.walk = function() {
 
 TrainingSession.prototype.step = function(stepIndex) {
     this.currentStepIndex = stepIndex;
-    this.currentStep = this.sessionSchedule.activities[this.currentStepIndex];
+    this.currentStep = this.session.schedule[this.currentStepIndex];
     this.stepStartTime = now();
     this.stepElapsedTime = 0;
     this.stepPausedTime = 0;
