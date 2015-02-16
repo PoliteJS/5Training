@@ -2,7 +2,7 @@
 var React = require('react');
 
 var SessionModel = require('./session-model');
-var activityComponents = require('activity');
+// var activityComponents = require('activity');
 
 var Container = require('reactui/container');
 var Row = require('reactui/row');
@@ -12,7 +12,9 @@ var Button = require('reactui/button');
 var Well = require('reactui/well');
 
 var Timer = require('timer');
+
 var PlayerToolbar = require('./player-toolbar.jsx');
+var PlayerActivity = require('./player-activity.jsx');
 
 var SessionPlayer = React.createClass({
     getDefaultProps() {
@@ -84,28 +86,17 @@ var SessionPlayer = React.createClass({
     },
     render() {
         
-        var activityComponent, toolbarComponent;
+        var toolbarComponent;
         var currentStep = this.state.currentStep;
         
-        if (currentStep) {
-            // get activity component
-            if (activityComponents[currentStep.activity]) {
-                activityComponent = activityComponents[currentStep.activity]; 
-            } else if (currentStep.gatherData) {
-                activityComponent = activityComponents['general-form'];
-            } else {
-                activityComponent = activityComponents['general-activity'];
-            }
-            // create the activity element giving data into it
-            activityComponent = React.createElement(activityComponent, {
-                activity: currentStep.activity,
-                elapsedTime: this.state.stepElapsedTime,
-                pausedTime: this.state.stepPausedTime,
-                activityTime: this.state.stepActivityTime,
-                countdown: this.state.stepCountdown,
-                pushEventData: this.pushEventData
-            });
-        }
+        var activityComponent = React.createElement(PlayerActivity, {
+            currentStep: this.state.currentStep,
+            elapsedTime: this.state.stepElapsedTime,
+            pausedTime: this.state.stepPausedTime,
+            activityTime: this.state.stepActivityTime,
+            countdown: this.state.stepCountdown,
+            pushEventData: this.pushEventData
+        });
 
         if (this.state.isRunning) {
             activityComponent = (
