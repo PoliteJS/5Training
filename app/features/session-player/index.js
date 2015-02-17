@@ -1,1 +1,1 @@
-module.exports = require('./session-player.jsx');
+module.exports = require('./player.jsx');

@@ -1,4 +1,7 @@
 
+var playerStore = require('./store');
+var playerActions = require('./actions');
+
 var React = require('react');
 
 var PageHeader = require('reactui/page-header');
@@ -6,15 +9,13 @@ var Container = require('reactui/container');
 var Row = require('reactui/row');
 var Col = require('reactui/col');
 
-var SessionModel = require('./session-model');
-var PlayerActivity = require('./player-activity.jsx');
 var PlayerStartup = require('./player-startup.jsx');
+var PlayerActivity = require('./player-activity.jsx');
 var PlayerCloseup = require('./player-closeup.jsx');
 
-var SessionPlayer = React.createClass({
+var Player = React.createClass({
     getDefaultProps() {
         return {
-            session: [],
             isRunning: false
         };
     },
@@ -31,54 +32,17 @@ var SessionPlayer = React.createClass({
             stepCountdown: 0
         };
     },
+    componentWillMount() {
+        playerStore.configSession(this.props.session);
+
+    },
     componentDidMount() {
-        this.model = new SessionModel(this.props.session);
-        this.model.subscribe(this.updateStateFromModel);
+        playerStore.subscribe(function(newState) {
+            this.setState(newState);
+        }.bind(this));
         if (this.props.isRunning) {
-            this.model.start();
+            playerActions.play();
         }
-        // this.setState({
-        //     // isRunning: true,
-        //     // currentStep: this.props.session.activities[1],
-        //     hasRan: true
-        // });
-    },
-    updateStateFromModel(model) {
-        this.setState({
-            hasRan: this.model.hasRan,
-            isRunning: this.model.isRunning,
-            isPaused: this.model.isPaused,
-            elapsedTime: this.model.elapsedTime,
-            currentStep: this.model.currentStep,
-            stepElapsedTime: this.model.stepElapsedTime,
-            stepPausedTime: this.model.stepPausedTime,
-            stepActivityTime: this.model.stepActivityTime,
-            stepCountdown: this.model.stepCountdown
-        });
-    },
-    startStop() {
-        if (this.model.isRunning) {
-            this.model.stop();
-        } else {
-            this.model.start();
-        }
-    },
-    pauseResume() {
-        if (this.model.isPaused) {
-            this.model.resume();
-        } else {
-            this.model.pause();
-        }  
-    },
-    reset() {
-        this.model.reset();
-    },
-    pushEventData(activity, label, value) {
-        this.model.push({
-            activity: activity,
-            label: label,
-            value: value
-        });
     },
     render() {
         var activityComponent;
@@ -93,23 +57,17 @@ var SessionPlayer = React.createClass({
                 stepElapsedTime: this.state.stepElapsedTime,
                 stepPausedTime: this.state.stepPausedTime,
                 stepActivityTime: this.state.stepActivityTime,
-                stepCountdown: this.state.stepCountdown,
-                pushEventData: this.pushEventData,
-                startStop: this.startStop,
-                pauseResume: this.pauseResume
+                stepCountdown: this.state.stepCountdown
             });
         // stats & save data screen
         } else if (this.state.hasRan) {
             activityComponent = React.createElement(PlayerCloseup, {
                 elapsedTime: this.state.elapsedTime,
-                onReset: this.reset,
-                tempResults: this.model.sessionEvents
+                tempResults: this.state.tempResults
             });
         // startup screen - before the training
         } else {
-            activityComponent = React.createElement(PlayerStartup, {
-                onStart: this.startStop
-            });
+            activityComponent = React.createElement(PlayerStartup);
         }
         
         return (
@@ -125,4 +83,4 @@ var SessionPlayer = React.createClass({
     }
 });
 
-module.exports = SessionPlayer;
+module.exports = Player;

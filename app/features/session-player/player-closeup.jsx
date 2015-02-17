@@ -1,9 +1,16 @@
 
+var playerActions = require('./actions');
+
 var React = require('react');
+
 var Button = require('reactui/button');
+
 var Timer = require('timer');
 
 var PlayerCloseup = React.createClass({
+    _reset() {
+        playerActions.reset();
+    },
     render() {
         return (
             <div className="text-center">
@@ -15,7 +22,7 @@ var PlayerCloseup = React.createClass({
                     text="Discard Training" 
                     icon="remove" 
                     iconPos="left"
-                    onClick={this.props.onReset}
+                    onClick={this._reset}
                 />
                 <hr />
                 <div>{this.props.tempResults}</div>
