@@ -1,14 +1,25 @@
 
+var playerActions = require('./actions');
+
 var React = require('react');
 
 var Button = require('reactui/button');
+
 var Timer = require('timer');
 
 var PlayerToolbar = React.createClass({
+    _stop() {
+        playerActions.stop();
+    },
+    _pauseResume() {
+        if (this.props.isPaused) {
+            playerActions.resume();
+        } else {
+            playerActions.pause();
+        }
+    },
     render() {
-
-        var startButtonLabel = this.props.isRunning ? 'Stop' : 'Start';
-        var startButtonIcon = this.props.isRunning ? 'stop' : 'play';
+        
         var pauseButtonLabel = this.props.isPaused ? 'Resume' : 'Pause';
         var pauseButtonIcon = this.props.isPaused ? 'play' : 'pause';
         var pauseButtonDisabled = this.props.isRunning ? false : true;
@@ -20,15 +31,15 @@ var PlayerToolbar = React.createClass({
                 </div>
                 <Button.Group>
                     <Button
-                        text={startButtonLabel}
-                        icon={startButtonIcon}
-                        onClick={this.props.startStop}
+                        text="stop"
+                        icon="stop"
+                        onClick={this._stop}
                         />
                     <Button
                         text={pauseButtonLabel}
                         icon={pauseButtonIcon}
                         disabled={pauseButtonDisabled}
-                        onClick={this.props.pauseResume}
+                        onClick={this._pauseResume}
                         />
                 </Button.Group>
             </div>

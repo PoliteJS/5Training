@@ -1,28 +1,29 @@
 'use strict';
 
-/**
- * this module contains a FAKE implementaiton of the step duration.
- * that information should be pushed from the model!
- */
+var playerActions = require('../session-player/actions');
 
 var React = require('react');
-var Timer = require('timer');
 
-function noop() {}
+var Well = require('reactui/well');
+
+var Timer = require('timer');
 
 var GeneralActivity = React.createClass({
     getDefaultProps() {
         return {
-            activity: null,
-            pushEventData: noop,
+            activity: null
         }
     },
     componentWillUnmount() {
-        this.props.pushEventData(this.props.currentStep.activity, 'duration', this.props.stepActivityTime);
+        playerActions.pushData({
+            dataType: 'duration',
+            activity: this.props.currentStep.activity,
+            value: this.props.stepActivityTime
+        });
     },
     render() {
         return (
-            <div>
+            <Well>
                 <h4>{this.props.currentStep.activity}</h4>
                 <p>
                     Elapsed:
@@ -40,7 +41,7 @@ var GeneralActivity = React.createClass({
                     Coundown:
                     <Timer value={this.props.stepCountdown} />
                 </p>
-            </div>
+            </Well>
         );
     }
 });

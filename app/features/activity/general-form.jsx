@@ -5,21 +5,22 @@
  * activity.
  *
  * When the component unmount the value is sent back
- * via 'pushEventData()' callback.
+ * via 'playerActions.pushData()' callback.
  */
+
+var playerActions = require('../session-player/actions');
 
 var React = require('react');
 
-var Timer = require('timer');
+var Well = require('reactui/well');
 var Input = require('reactui/input');
 var Button = require('reactui/button');
 
-function noop() {}
+var Timer = require('timer');
 
 var GeneralForm = React.createClass({
     getDefaultProps() {
         return {
-            pushEventData: noop,
             activity: null,
             question: 'how many repetitions?'
         };
@@ -36,7 +37,11 @@ var GeneralForm = React.createClass({
         if (!this.state.value) {
             return;
         }
-        this.props.pushEventData(this.props.currentStep.activity, 'repetitions', this.state.value);
+        playerActions.pushData({
+            dataType: 'repetitions',
+            activity: this.props.currentStep.activity,
+            value: this.state.value
+        });
     },
     clearValue() {
         this.refs['input'].setValue('');
@@ -68,7 +73,7 @@ var GeneralForm = React.createClass({
     },
     render() {
         return (
-            <div>
+            <Well>
                 <h4>Gather data for: {this.props.currentStep.activity}</h4>
                 <Timer value={this.props.stepCountdown} />
 
@@ -91,7 +96,7 @@ var GeneralForm = React.createClass({
                         onClick={this.increase}
                         />
                 </Input.Group>
-            </div>
+            </Well>
         );
     }
 });

@@ -1,10 +1,7 @@
 
 var React = require('react');
+
 var activityComponents = require('activity');
-
-var Well = require('reactui/well');
-var Timer = require('timer');
-
 var PlayerToolbar = require('./player-toolbar.jsx');
 
 var PlayerActivity = React.createClass({
@@ -38,7 +35,7 @@ var PlayerActivity = React.createClass({
                     pauseResume={this.props.pauseResume}
                     />
                 <hr />
-                <Well children={element} />
+                {element}
             </div>
         );
     }
