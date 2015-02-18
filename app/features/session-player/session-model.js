@@ -7,7 +7,6 @@ function TrainingSession(sessionSchedule, options) {
     
     this.hasRan;
     this.isRunning;
-    this.sessionEvents;
     
     this.__timer;
     this.startTime;
@@ -37,7 +36,6 @@ function TrainingSession(sessionSchedule, options) {
 TrainingSession.prototype.reset = function() {
     this.hasRan = false;
     this.isRunning = false;
-    this.sessionEvents = [];
     
     this.startTime = now();
     this.elapsedTime = 0;
@@ -165,11 +163,6 @@ TrainingSession.prototype.emit = function(eventName) {
 
 TrainingSession.prototype.subscribe = function(eventHandler) {
     this.__eventHandlers.push(eventHandler);
-};
-
-TrainingSession.prototype.push = function(data) {
-    this.sessionEvents.push(data);
-    this.emit('event-data', data);
 };
 
 function now() {

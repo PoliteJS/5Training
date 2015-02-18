@@ -3,9 +3,11 @@ var subscribable = require('jqb-subscribable');
 
 var playerDispatcher = require('./dispatcher');
 var SessionModel = require('./session-model');
+var LogModel = require('./log-model');
 
 var channel;
 var sessionModel;
+var logModel;
 var dispatcherIndex;
 
 exports.init = function() {
@@ -20,6 +22,11 @@ exports.configSession = function(session, options) {
     }
     sessionModel = new SessionModel(session, options);
     sessionModel.subscribe(computeStatus);
+
+    if (logModel) {
+        this.dispose();
+    }
+    logModel = new LogModel(session, options);
 };
 
 exports.disposeSession = function() {
@@ -49,7 +56,7 @@ function dispatcherCallback(action) {
             break;
         case 'data':
             // this should go into a "sessionLog" model!!!
-            sessionModel.push(action.data);
+            logModel.push(action.data);
             break;
     }
 }
@@ -57,6 +64,7 @@ function dispatcherCallback(action) {
 function computeStatus() {
 
     var state = {
+        // clock model
         hasRan: sessionModel.hasRan,
         isRunning: sessionModel.isRunning,
         isPaused: sessionModel.isPaused,
@@ -66,7 +74,9 @@ function computeStatus() {
         stepPausedTime: sessionModel.stepPausedTime,
         stepActivityTime: sessionModel.stepActivityTime,
         stepCountdown: sessionModel.stepCountdown,
-        tempResults: sessionModel.sessionEvents
+
+        // log model
+        tempResults: logModel.sessionEvents
     };
 
     channel.emit('new-state', state);
