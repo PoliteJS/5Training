@@ -1,17 +1,24 @@
 
-module.exports = TrainingSession;
+module.exports = SessionModel;
 
-function TrainingSession(sessionSchedule, options) {
-    this.session = sessionSchedule;
+function SessionModel(session, options) {
+    this.schedule = session.schedule;
     this.options = options;
     
     this.hasRan;
     this.isRunning;
-    this.sessionEvents;
+    this.isPaused;
+    this.isPaused = false;
     
     this.__timer;
     this.startTime;
     this.elapsedTime;
+
+    this.pauseStartTime;
+    this.pauseElapsedTime;
+
+    this.previousStepIndex;
+    this.previousStep;
     
     this.currentStepIndex;
     this.currentStep;
@@ -23,28 +30,25 @@ function TrainingSession(sessionSchedule, options) {
     this.stepCountdown;
     this.__stepPartialPausedTime;
     
-    
-    this.previousStepIndex;
-    this.previousStep;
-    
-    this.isPaused;
-    this.pauseStartTime;
-    this.pauseElapsedTime;
-    
     this.__eventHandlers = [];
 }
 
-TrainingSession.prototype.reset = function() {
+SessionModel.prototype.reset = function() {
     this.hasRan = false;
     this.isRunning = false;
-    this.sessionEvents = [];
     
-    this.startTime = now();
+    this.startTime = null;
     this.elapsedTime = 0;
+
+    this.pauseStartTime = null;
+    this.pauseElapsedTime = 0;
+
+    this.previousStepIndex = null;
+    this.previousStep = null;
     
     this.currentStepIndex = null;
     this.currentStep = null;
-    this.stepStartTime = now();
+    this.stepStartTime = Date.now();
     this.stepDuration = 0;
     this.stepElapsedTime = 0;
     this.stepPausedTime = 0;
@@ -52,25 +56,20 @@ TrainingSession.prototype.reset = function() {
     this.stepCountdown = 0;
     this.__stepPartialPausedTime = 0;
     
-    this.previousStepIndex = null;
-    this.previousStep = null;
-    
-    this.isPaused = false;
-    this.pauseElapsedTime = 0;
-
     this.emit('reset');
 };
 
-TrainingSession.prototype.start = function() {
+SessionModel.prototype.start = function() {
     this.reset();
     this.isRunning = true;
+    this.startTime = Date.now();
     this.step(0);
     this.tick();
     this.__timer = setInterval(this.tick.bind(this), 100);
     this.emit('start');
 };
 
-TrainingSession.prototype.stop = function() {
+SessionModel.prototype.stop = function() {
     clearInterval(this.__timer);
     if (this.isPaused) {
         this.resume();
@@ -80,33 +79,33 @@ TrainingSession.prototype.stop = function() {
     this.emit('stop');
 };
 
-TrainingSession.prototype.pause = function() {
+SessionModel.prototype.pause = function() {
     this.isPaused = true;
     this.pauseElapsedTime = 0;
-    this.pauseStartTime = now();
+    this.pauseStartTime = Date.now();
     this.emit('pause');
 };
 
-TrainingSession.prototype.resume = function() {
+SessionModel.prototype.resume = function() {
     this.isPaused = false;
     this.stepDuration += this.pauseElapsedTime;
     this.__stepPartialPausedTime += this.pauseElapsedTime;
     this.emit('resume');
 };
 
-TrainingSession.prototype.finish = function() {
+SessionModel.prototype.finish = function() {
     this.stop();
     this.emit('finish');
 };
 
-TrainingSession.prototype.tick = function() {
+SessionModel.prototype.tick = function() {
         
-    this.elapsedTime = now() - this.startTime;
-    this.stepElapsedTime = now() - this.stepStartTime;
+    this.elapsedTime = Date.now() - this.startTime;
+    this.stepElapsedTime = Date.now() - this.stepStartTime;
     this.stepCountdown = this.stepDuration - this.stepElapsedTime;
     
     if (this.isPaused) {
-        this.pauseElapsedTime = now() - this.pauseStartTime;
+        this.pauseElapsedTime = Date.now() - this.pauseStartTime;
         this.stepCountdown += this.pauseElapsedTime;
         this.stepPausedTime = this.__stepPartialPausedTime + this.pauseElapsedTime;
     }
@@ -132,10 +131,10 @@ TrainingSession.prototype.tick = function() {
     }
 };
 
-TrainingSession.prototype.walk = function() {
+SessionModel.prototype.walk = function() {
     var nextStepIndex = this.currentStepIndex + 1;
     
-    if (nextStepIndex >= this.session.schedule.length) {
+    if (nextStepIndex >= this.schedule.length) {
         this.finish();
         return;
     }
@@ -145,10 +144,10 @@ TrainingSession.prototype.walk = function() {
     this.step(nextStepIndex);
 };
 
-TrainingSession.prototype.step = function(stepIndex) {
+SessionModel.prototype.step = function(stepIndex) {
     this.currentStepIndex = stepIndex;
-    this.currentStep = this.session.schedule[this.currentStepIndex];
-    this.stepStartTime = now();
+    this.currentStep = this.schedule[this.currentStepIndex];
+    this.stepStartTime = Date.now();
     this.stepElapsedTime = 0;
     this.stepPausedTime = 0;
     this.__stepPartialPausedTime = 0;
@@ -157,21 +156,12 @@ TrainingSession.prototype.step = function(stepIndex) {
     this.emit('step');
 };
 
-TrainingSession.prototype.emit = function(eventName) {
+SessionModel.prototype.emit = function(eventName) {
     this.__eventHandlers.forEach(function(eventHandler) {
         eventHandler(eventName, this);
     }.bind(this));
 };
 
-TrainingSession.prototype.subscribe = function(eventHandler) {
+SessionModel.prototype.subscribe = function(eventHandler) {
     this.__eventHandlers.push(eventHandler);
 };
-
-TrainingSession.prototype.push = function(data) {
-    this.sessionEvents.push(data);
-    this.emit('event-data', data);
-};
-
-function now() {
-    return (new Date()).getTime();
-}
