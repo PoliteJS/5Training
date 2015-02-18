@@ -1,8 +1,8 @@
 
 module.exports = SessionModel;
 
-function SessionModel(sessionSchedule, options) {
-    this.session = sessionSchedule;
+function SessionModel(session, options) {
+    this.schedule = session.schedule;
     this.options = options;
     
     this.hasRan;
@@ -48,7 +48,7 @@ SessionModel.prototype.reset = function() {
     
     this.currentStepIndex = null;
     this.currentStep = null;
-    this.stepStartTime = now();
+    this.stepStartTime = Date.now();
     this.stepDuration = 0;
     this.stepElapsedTime = 0;
     this.stepPausedTime = 0;
@@ -62,6 +62,7 @@ SessionModel.prototype.reset = function() {
 SessionModel.prototype.start = function() {
     this.reset();
     this.isRunning = true;
+    this.startTime = Date.now();
     this.step(0);
     this.tick();
     this.__timer = setInterval(this.tick.bind(this), 100);
@@ -81,7 +82,7 @@ SessionModel.prototype.stop = function() {
 SessionModel.prototype.pause = function() {
     this.isPaused = true;
     this.pauseElapsedTime = 0;
-    this.pauseStartTime = now();
+    this.pauseStartTime = Date.now();
     this.emit('pause');
 };
 
@@ -99,12 +100,12 @@ SessionModel.prototype.finish = function() {
 
 SessionModel.prototype.tick = function() {
         
-    this.elapsedTime = now() - this.startTime;
-    this.stepElapsedTime = now() - this.stepStartTime;
+    this.elapsedTime = Date.now() - this.startTime;
+    this.stepElapsedTime = Date.now() - this.stepStartTime;
     this.stepCountdown = this.stepDuration - this.stepElapsedTime;
     
     if (this.isPaused) {
-        this.pauseElapsedTime = now() - this.pauseStartTime;
+        this.pauseElapsedTime = Date.now() - this.pauseStartTime;
         this.stepCountdown += this.pauseElapsedTime;
         this.stepPausedTime = this.__stepPartialPausedTime + this.pauseElapsedTime;
     }
@@ -133,7 +134,7 @@ SessionModel.prototype.tick = function() {
 SessionModel.prototype.walk = function() {
     var nextStepIndex = this.currentStepIndex + 1;
     
-    if (nextStepIndex >= this.session.schedule.length) {
+    if (nextStepIndex >= this.schedule.length) {
         this.finish();
         return;
     }
@@ -145,8 +146,8 @@ SessionModel.prototype.walk = function() {
 
 SessionModel.prototype.step = function(stepIndex) {
     this.currentStepIndex = stepIndex;
-    this.currentStep = this.session.schedule[this.currentStepIndex];
-    this.stepStartTime = now();
+    this.currentStep = this.schedule[this.currentStepIndex];
+    this.stepStartTime = Date.now();
     this.stepElapsedTime = 0;
     this.stepPausedTime = 0;
     this.__stepPartialPausedTime = 0;
@@ -164,7 +165,3 @@ SessionModel.prototype.emit = function(eventName) {
 SessionModel.prototype.subscribe = function(eventHandler) {
     this.__eventHandlers.push(eventHandler);
 };
-
-function now() {
-    return (new Date()).getTime();
-}

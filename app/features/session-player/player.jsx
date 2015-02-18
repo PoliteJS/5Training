@@ -33,20 +33,22 @@ var Player = React.createClass({
         };
     },
     componentWillMount() {
-        playerStore.configSession(this.props.session);
-
-    },
-    componentDidMount() {
+        playerStore.init(this.props.session, {});
         playerStore.subscribe(function(newState) {
             this.setState(newState);
         }.bind(this));
+    },
+    componentWillUnmount() {
+        playerStore.dispose();
+    },
+    componentDidMount() {
         if (this.props.isRunning) {
             playerActions.play();
         }
     },
     render() {
         var activityComponent;
-
+        
         // current activity view
         if (this.state.isRunning) {
             activityComponent = React.createElement(PlayerActivity, {

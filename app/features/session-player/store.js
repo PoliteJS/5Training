@@ -10,23 +10,22 @@ var sessionModel;
 var logModel;
 var dispatcherIndex;
 
-exports.init = function() {
-    console.log('init session training player store');
+exports.init = function(session, options) {
+    console.log('>> init player store');
     channel = subscribable.create();
-    dispatcherIndex = playerDispatcher.register(dispatcherCallback);
+
+    sessionModel = new SessionModel(session, options);
+    logModel = new LogModel(session, options);
+
+    // collect subscriptions for dispose?
+    sessionModel.subscribe(computeStatus);
+    playerDispatcher.register(dispatcherCallback);
 };
 
-exports.configSession = function(session, options) {
-    if (sessionModel) {
-        this.disposeSession();
-    }
-    sessionModel = new SessionModel(session, options);
-    sessionModel.subscribe(computeStatus);
-
-    if (logModel) {
-        this.dispose();
-    }
-    logModel = new LogModel(session, options);
+exports.dispose = function() {
+    console.log('<< dispose player store');
+    // dispose models
+    // dispose dispatcher
 };
 
 exports.disposeSession = function() {
@@ -40,6 +39,7 @@ exports.subscribe = function(fn) {
 function dispatcherCallback(action) {
     switch (action.actionType) {
         case 'start':
+            logModel.reset();
             sessionModel.start();
             break;
         case 'stop':
@@ -53,9 +53,9 @@ function dispatcherCallback(action) {
             break;
         case 'reset':
             sessionModel.reset();
+            logModel.reset();
             break;
         case 'data':
-            // this should go into a "sessionLog" model!!!
             logModel.push(action.data);
             break;
     }
@@ -80,9 +80,4 @@ function computeStatus() {
     };
 
     channel.emit('new-state', state);
-}
-
-// singleton initialisation
-if (!channel) {
-    exports.init();
 }
